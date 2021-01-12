@@ -111,7 +111,15 @@ namespace Validation
             do
             {
                 converted = Parse(Console.ReadLine(), typeCode, out obj);
-                if (string.IsNullOrEmpty(obj.ToString()) && string.IsNullOrWhiteSpace(obj.ToString()) || !converted) continue;
+                if (string.IsNullOrEmpty(obj.ToString()) && string.IsNullOrWhiteSpace(obj.ToString()))
+                {
+                    Console.SetCursorPosition(cursorPosition, Console.CursorTop - 1);
+                    Console.Write(new string(' ', (obj.ToString()).Length));
+                    Console.SetCursorPosition(cursorPosition, Console.CursorTop);
+                    continue;
+                };
+                
+                if (!converted) continue;
                 
                 if (obeyAll)
                 {
