@@ -43,6 +43,7 @@ namespace Validation
             value = conversion;
             return converted;
         }
+        
         private static bool ParseDate(string strDate, string format, out DateTime date, DateTimeStyles timeStyles = DateTimeStyles.None)
         {
             DateTime conversion;
@@ -78,6 +79,7 @@ namespace Validation
             } while (string.IsNullOrEmpty(obj.ToString()) || string.IsNullOrWhiteSpace(obj.ToString()) || !converted);
             return obj;
         }
+        
         public static DateTime ReadDateTime(string date, string format, DateTimeStyles styles = DateTimeStyles.None)
         {
             DateTime dateObj = default;
@@ -99,6 +101,7 @@ namespace Validation
 
             return dateObj;
         }
+        
         public static dynamic ReadWithConditions(bool obeyAll, TypeCode typeCode, int cursorPosition, params Func<int, bool>[] conditions)
         {
             dynamic obj = null;
