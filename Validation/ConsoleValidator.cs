@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -43,7 +42,6 @@ namespace Validation
             value = conversion;
             return converted;
         }
-        
         private static bool ParseDate(string strDate, string format, out DateTime date, DateTimeStyles timeStyles = DateTimeStyles.None)
         {
             DateTime conversion;
@@ -100,6 +98,31 @@ namespace Validation
             { }
 
             return dateObj;
+        }
+
+        public static ConsoleColor ReadColor()
+        {
+            ConsoleColor col = default;
+            int left = Console.CursorLeft;
+            bool converted = false;
+
+            do
+            {
+                try
+                {
+                    converted = Enum.TryParse(Console.ReadLine(), true, out col);
+                    if (string.IsNullOrEmpty(col.ToString()) || string.IsNullOrWhiteSpace(col.ToString()) || !converted)
+                    {
+                        Console.SetCursorPosition(left, Console.CursorTop - 1);
+                        Console.Write(new string(' ', (col.ToString()).Length));
+                        Console.SetCursorPosition(left, Console.CursorTop);
+                    }
+                }
+                catch (Exception)
+                { }
+            } while (string.IsNullOrEmpty(col.ToString()) || string.IsNullOrWhiteSpace(col.ToString()) || !converted);
+            
+            return col;
         }
         
         public static dynamic ReadWithConditions(bool obeyAll, TypeCode typeCode, int cursorPosition, params Func<dynamic, bool>[] conditions)
