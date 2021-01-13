@@ -80,7 +80,7 @@ namespace Validation
             return obj;
         }
         
-        public static DateTime ReadDateTime(string date, string format, DateTimeStyles styles = DateTimeStyles.None)
+        public static DateTime ReadDate(string date, string format, DateTimeStyles styles = DateTimeStyles.None)
         {
             DateTime dateObj = default;
             int left = Console.CursorLeft;
@@ -102,7 +102,7 @@ namespace Validation
             return dateObj;
         }
         
-        public static dynamic ReadWithConditions(bool obeyAll, TypeCode typeCode, int cursorPosition, params Func<int, bool>[] conditions)
+        public static dynamic ReadWithConditions(bool obeyAll, TypeCode typeCode, int cursorPosition, params Func<dynamic, bool>[] conditions)
         {
             dynamic obj = null;
             bool obeysConditions = false;
