@@ -118,10 +118,10 @@ namespace Validation
                     Console.SetCursorPosition(cursorPosition, Console.CursorTop);
                     continue;
                 };
+
+                if (!converted || typeCode != Type.GetTypeCode(obj.GetType())) continue;
                 
-                if (!converted) continue;
-                
-                if (obeyAll)
+                if (obeyAll && converted)
                 {
                     foreach (var condition in conditions)
                     {
@@ -152,7 +152,7 @@ namespace Validation
             
             if (!obeysConditions)
                 obj = ReadWithConditions(obeyAll, typeCode, cursorPosition, conditions);
-
+            
             return obj;
         }
         
