@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -8,38 +9,22 @@ namespace Validation
     {
         private static bool Parse(string objToRead, TypeCode typeCode, out dynamic value)
         {
-            dynamic conversion = null;
             bool converted = false;
-            
-            switch (typeCode)
+            Dictionary<TypeCode, Func<dynamic>> parseActions = new Dictionary<TypeCode, Func<dynamic>>()
             {
-                case TypeCode.String:
-                    conversion = objToRead;
-                    converted = true;
-                    break;
-                
-                case TypeCode.Int32:
-                    converted = int.TryParse(objToRead, out int i);
-                    if (converted) conversion = i; else conversion = objToRead;
-                    break;
-                        
-                case TypeCode.Double:
-                    converted = double.TryParse(objToRead, out double d);
-                    if (converted) conversion = d; else conversion = objToRead;
-                    break;
-                        
-                case TypeCode.Single:
-                    converted = float.TryParse(objToRead, out float f);
-                    if (converted) conversion = f; else conversion = objToRead;
-                    break;
-                
-                case TypeCode.Boolean:
-                    converted = bool.TryParse(objToRead, out bool b);
-                    if (converted) conversion = b; else conversion = objToRead;
-                    break;
-            }
-            
-            value = conversion;
+                {TypeCode.String, () => { converted = true; return objToRead; }},
+                {TypeCode.Int16, () => { converted = short.TryParse(objToRead, out var sh); return converted ? (dynamic) sh : objToRead; }},
+                {TypeCode.Int32, () => { converted = int.TryParse(objToRead, out var i); return converted ? (dynamic) i : objToRead; }},
+                {TypeCode.Int64, () => { converted = long.TryParse(objToRead, out var lo); return converted ? (dynamic) lo : objToRead; }},
+                {TypeCode.Double, () => { converted = double.TryParse(objToRead, out var d); return converted ? (dynamic) d : objToRead; }},
+                {TypeCode.Single, () => { converted = float.TryParse(objToRead, out var f); return converted ? (dynamic) f : objToRead; }},
+                {TypeCode.Boolean, () => { converted = bool.TryParse(objToRead, out var tf); return converted ? (dynamic) tf : objToRead; }},
+                {TypeCode.Char, () => { converted = char.TryParse(objToRead, out var c); return converted ? (dynamic) c : objToRead; }},
+                {TypeCode.Byte, () => { converted = byte.TryParse(objToRead, out var by); return converted ? (dynamic) @by : objToRead; }},
+                {TypeCode.DateTime, () => { converted = DateTime.TryParse(objToRead, out var dt); return converted ? (dynamic) dt : objToRead; }},
+            };
+
+            value = parseActions[typeCode]();
             return converted;
         }
         private static bool ParseDate(string strDate, string format, out DateTime date, DateTimeStyles timeStyles = DateTimeStyles.None)
@@ -140,7 +125,7 @@ namespace Validation
                     Console.Write(new string(' ', (obj.ToString()).Length));
                     Console.SetCursorPosition(cursorPosition, Console.CursorTop);
                     continue;
-                };
+                }
 
                 if (!converted || typeCode != Type.GetTypeCode(obj.GetType())) continue;
                 
@@ -191,12 +176,12 @@ namespace Validation
                 try
                 {
                     email = Console.ReadLine();
-                    isValid = reg.Match(email).Success;
+                    isValid = reg.Match(email ?? string.Empty).Success;
 
                     if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email) || !isValid)
                     {
                         Console.SetCursorPosition(left, Console.CursorTop - 1);
-                        Console.Write(new string(' ', email.Length));
+                        if (email != null) Console.Write(new string(' ', email.Length));
                         Console.SetCursorPosition(left, Console.CursorTop);
                     }
                 }
